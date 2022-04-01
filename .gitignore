@@ -1,0 +1,10 @@
+**/.DS_Store
+node_modules
+.idea
+.snowpack
+build
+.env
+yarn-error.log
+lerna-debug.log
+lib
+.yarn
