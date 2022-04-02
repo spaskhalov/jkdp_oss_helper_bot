@@ -11,8 +11,8 @@
   },
   "scripts": {
     "build": "tsc --project ./",
-    "start:dev": "nodemon src/oss_helper_bot.ts",
-    "start:prod": "node build/oss_helper_bot.js"
+    "start:dev": "nodemon src/ossHelperBot.ts",
+    "start:prod": "node build/ossHelperBot.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
