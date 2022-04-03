@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { Composer, Markup, Scenes, session, Telegraf } from 'telegraf'
-import { OssDecisionPaperWizard } from './ossDecisionPaperWizard'
+import { OssDecisionPaperWizard } from './ossDecisionWizard/ossDecisionPaperWizard'
 import { OssHelperContext } from "./OssHelperContext"
 import { readLegendData } from "./readLegendData"
 
-const allUsers = readLegendData()
-console.log(`Readed ${allUsers.data.length} fields from legend`)
+const ossLegend = readLegendData()
+console.log(`Readed ${ossLegend.data.length} fields from legend`)
 
 const token = process.env.BOT_TOKEN
 if (token === undefined) {
@@ -32,6 +32,11 @@ const stage = new Scenes.Stage<OssHelperContext>([OssDecisionPaperWizard], {
 })
 bot.use(session())
 bot.use(stage.middleware())
+bot.use((ctx, next) => {
+  const now = new Date()
+  ctx.ossLegend = ossLegend
+  return next()
+})
 
 // bot.hears('🔍 oss', (ctx) => ctx.scene.enter('ossDecisionPaperWizard'))
 // bot.command('echo', (ctx) => ctx.reply('idi nafig'))

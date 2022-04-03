@@ -10,7 +10,7 @@ interface legendData{
   fileNum: Number,
   flats: Number[],
   carPlaces: Number[],
-  pantries: Number[],
+  storerooms: Number[],
   owners: String[]
   name: String
 }
@@ -30,7 +30,7 @@ export class OSSLegend{
         fileNum: d.file_num,
         flats: flats,
         carPlaces: carPlaces,
-        pantries: pantries,      
+        storerooms: pantries,      
         owners: owners,
         name: name,
       })
