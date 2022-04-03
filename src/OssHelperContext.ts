@@ -1,4 +1,4 @@
-import { Scenes } from 'telegraf';
+import { Scenes } from 'telegraf'
 
 interface OssHelperSessionData extends Scenes.WizardSessionData {  
   flatNumber: number;

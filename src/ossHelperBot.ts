@@ -2,6 +2,10 @@
 import { Composer, Markup, Scenes, session, Telegraf } from 'telegraf'
 import { OssDecisionPaperWizard } from './ossDecisionPaperWizard'
 import { OssHelperContext } from "./OssHelperContext"
+import { readLegendData } from "./readLegendData"
+
+const allUsers = readLegendData()
+console.log(`Readed ${allUsers.data.length} fields from legend`)
 
 const token = process.env.BOT_TOKEN
 if (token === undefined) {
@@ -37,6 +41,7 @@ bot.action('OSS_ACTION', (ctx) => ctx.scene.enter('OssDecisionPaperWizard'))
 bot.on('message', (ctx) => ctx.reply('Чем я могу помочь?', mainScreenKeyboard))
 bot.launch()
 
-// Enable graceful stop
-process.once('SIGINT', () => bot.stop('SIGINT'))
-process.once('SIGTERM', () => bot.stop('SIGTERM'))
+// // Enable graceful stop
+// process.once('SIGINT', () => bot.stop('SIGINT'))
+// process.once('SIGTERM', () => bot.stop('SIGTERM'))
+

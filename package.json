@@ -7,7 +7,8 @@
   "license": "MIT",
   "dependencies": {
     "gitignore": "^0.7.0",
-    "telegraf": "^4.7.0"
+    "telegraf": "^4.7.0",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "build": "tsc --project ./",

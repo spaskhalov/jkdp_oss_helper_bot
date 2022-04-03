@@ -8,13 +8,19 @@
       "command": "yarn start:dev",
       "name": "Run dev",
       "request": "launch",
-      "type": "node-terminal"
+      "type": "node-terminal",
+      "env": {        
+        "LEGEND_FILE" : "./data/legend.xlsx"
+      }
     },  
     {
       "command": "yarn build; yarn start:prod",
       "name": "Run prod",
       "request": "launch",
-      "type": "node-terminal"
+      "type": "node-terminal",
+      "env": {        
+        "LEGEND_FILE" : "./data/legend.xlsx"
+      }
     },    
   ]
 }
