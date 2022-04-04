@@ -46,9 +46,9 @@ function extractNumbers(st: String, flatsRegex: RegExp) {
   return Array.from(st.matchAll(flatsRegex), ns => Number.parseInt(ns[1]));
 }
 
-export function readLegendData() {  
+export function readLegendData(fileName: string) {  
   // Reading our test file
-  const file = reader.readFile(process.env.LEGEND_FILE!)    
+  const file = reader.readFile(fileName)
   let data: legendRawDataField[] = []    
   const sheetName = file.SheetNames[0]
     

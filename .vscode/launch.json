@@ -10,7 +10,7 @@
       "request": "launch",
       "type": "node-terminal",
       "env": {        
-        "LEGEND_FILE" : "./data/legend.xlsx"
+        "DATA_ROOT" : "./data"
       }
     },  
     {
@@ -19,7 +19,7 @@
       "request": "launch",
       "type": "node-terminal",
       "env": {        
-        "LEGEND_FILE" : "./data/legend.xlsx"
+        "DATA_ROOT" : "./data"
       }
     },    
   ]

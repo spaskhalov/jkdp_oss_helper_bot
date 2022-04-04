@@ -9,11 +9,9 @@ interface OssHelperSessionData extends Scenes.WizardSessionData {
   owners: string[];  
 }
 
-export interface OssHelperContext extends Context {
-  // will be available under `ctx.ossLegend`
+export interface OssHelperContext extends Context {  
   ossLegend: OSSLegend
-  // declare scene type
-  scene: Scenes.SceneContextScene<OssHelperContext, OssHelperSessionData>
-  // declare wizard type
+  dataRoot: string  
+  scene: Scenes.SceneContextScene<OssHelperContext, OssHelperSessionData> 
   wizard: Scenes.WizardContextWizard<OssHelperContext>  
 }

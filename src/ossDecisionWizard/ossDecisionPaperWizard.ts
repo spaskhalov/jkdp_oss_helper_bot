@@ -139,15 +139,15 @@ _Например Номер No 77:09:0001007:13872-77/060/2021-1 от 08.10.202
     objectName: string): Promise<boolean | undefined>
   {    
     const isPreFilled = row?.owners && row?.owners.length > 0
-    let shortOSSBlankPath = './data/short/Empty.pdf'
-    let longOSSBlankPath = './data/long/Empty.pdf'    
+    let shortOSSBlankPath = `${ctx.dataRoot}/short/Empty.pdf`
+    let longOSSBlankPath = `${ctx.dataRoot}/long/Empty.pdf`
   
     if(row){
       const greetingsMsg = row.name.length > 0 ? `${row.name}, я` : 'Я'
       const blankName = isPreFilled ? 'именные' : 'частично заполненные'
       await ctx.reply(`Отлично! ${greetingsMsg} нашел ${blankName} бланки для ${objectName}!`)  
-      shortOSSBlankPath = `./data/short/files/${row.fileNum} _ .pdf`
-      longOSSBlankPath = `./data/long/files/${row.fileNum} _ .pdf`
+      shortOSSBlankPath = `${ctx.dataRoot}/short/files/${row.fileNum} _ .pdf`
+      longOSSBlankPath = `${ctx.dataRoot}/long/files/${row.fileNum} _ .pdf`
     }else
     {
       await ctx.reply(`Простите... Но я не нашел именные бланки для ${objectName}:( Я отправлю Вам шаблоны.`)

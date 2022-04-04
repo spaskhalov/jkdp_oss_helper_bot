@@ -6,13 +6,13 @@ import { OssDecisionPaperWizard } from './ossDecisionWizard/ossDecisionPaperWiza
 import { OssHelperContext } from "./OssHelperContext"
 import { readLegendData } from "./readLegendData"
 
-const ossLegend = readLegendData()
-console.log(`Readed ${ossLegend.data.length} fields from legend`)
-
 const token = process.env.BOT_TOKEN
 if (token === undefined) {
   throw new Error('BOT_TOKEN must be provided!')
 }
+
+const dataRoot = process.env.DATA_ROOT ?? "./data"
+const ossLegend = readLegendData(`${dataRoot}/legend.xlsx`)
 
 // Handler factories
 const { leave } = Scenes.Stage
@@ -31,6 +31,7 @@ bot.use(session())
 bot.use((ctx, next) => {
   const now = new Date()
   ctx.ossLegend = ossLegend
+  ctx.dataRoot = dataRoot
   return next()
 })
 bot.use(stage.middleware())
