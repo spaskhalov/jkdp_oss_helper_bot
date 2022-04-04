@@ -105,26 +105,40 @@ async function lastStep(ctx: OssHelperContext){
 
 async function verifyData(ctx: OssHelperContext){
   const rowByFlatNum = getRowByFlatNum()
-
-  let shortOSSBlankPath = './data/short/Empty.pdf'
-  let longOSSBlankPath = './data/long/Empty.pdf'
-
-  if(rowByFlatNum){
-    if(checkOwners()){
-      await ctx.reply(`Отлично! ${rowByFlatNum.name} я нашел для Вас именные бланки!`)
-      shortOSSBlankPath = `./data/short/files/${rowByFlatNum.fileNum} _ .pdf`
-      longOSSBlankPath = `./data/long/files/${rowByFlatNum.fileNum} _ .pdf`      
-    }else{
-      await ctx.reply(`Собственники указанные в реестре отличаются от введенных Вами. Попробуйте еще раз.`)
-      return
-    }
-  }else
-  {
-    await ctx.reply(`Простите... Но я не нашел квартиры №${ctx.scene.session.flats}:( Если вы уверены, что номер введен верно обратитесь к @leonid_tj или @paskhalov`)
+  if(!checkOwners()){
+    await ctx.reply(`Собственники указанные в реестре отличаются от введенных Вами. Попробуйте еще раз.`)
     return
   }
+
+  await verifyDataInner(rowByFlatNum, 'квартиры')
+  if(ctx.scene.session?.carPlaces && ctx.scene.session?.carPlaces.length > 0)
+    await verifyDataInner(getRowByCarPlacesNum(), 'м/м')
+  if(ctx.scene.session?.storerooms && ctx.scene.session?.storerooms.length > 0)
+    await verifyDataInner(getRowByCarPlacesNum(), 'кладовки')
+
+  //const rowByCarPlaces = getRowByCarPlacesNum()
+
+  async function verifyDataInner(
+    row: legendData | undefined,
+    objectName: string)
+  {    
+    let shortOSSBlankPath = './data/short/Empty.pdf'
+    let longOSSBlankPath = './data/long/Empty.pdf'
   
-  await sendDecisionPapers(ctx, shortOSSBlankPath, longOSSBlankPath)  
+    if(row){    
+        if(row.name.length > 0)  
+          await ctx.reply(`Отлично! ${row.name}, я нашел именные бланки для ${objectName}!`)
+        else
+          await ctx.reply(`Отлично! Я нашел именные бланки для ${objectName}!`)
+        shortOSSBlankPath = `./data/short/files/${row.fileNum} _ .pdf`
+        longOSSBlankPath = `./data/long/files/${row.fileNum} _ .pdf`            
+    }else
+    {
+      await ctx.reply(`Простите... Но я не нашел именные бланки для ${objectName}:( Я отправлю Вам шаблоны.`)    
+    }
+  
+    await sendDecisionPapers(ctx, objectName, shortOSSBlankPath, longOSSBlankPath)
+  }
 
   function getRowByFlatNum(): legendData | undefined{    
     for(let flatNum of ctx.scene.session.flats){    
@@ -135,12 +149,26 @@ async function verifyData(ctx: OssHelperContext){
     return undefined
   }
 
-  function ownersIsSettedInReester() {
-    return rowByFlatNum?.owners && rowByFlatNum?.owners.length > 0
+  function getRowByCarPlacesNum(): legendData | undefined{    
+    for(let carPlace of ctx.scene.session.carPlaces){    
+      const row = ctx.ossLegend.data.find(((d) => d.carPlaces.includes(carPlace)))
+      if(row !== undefined)
+        return row
+    }
+    return undefined
+  }
+
+  function getRowByStoreroomNum(): legendData | undefined{    
+    for(let storeroom of ctx.scene.session.storerooms){    
+      const row = ctx.ossLegend.data.find(((d) => d.storerooms.includes(storeroom)))
+      if(row !== undefined)
+        return row
+    }
+    return undefined
   }
 
   function checkOwners() {
-    if(!ownersIsSettedInReester())
+    if(!rowByFlatNum?.owners || rowByFlatNum?.owners.length == 0)
       return true
     return rowByFlatNum?.owners.every((fio) => ctx.scene.session?.owners.includes(fio))
   }
