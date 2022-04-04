@@ -31,12 +31,12 @@ const stage = new Scenes.Stage<OssHelperContext>([OssDecisionPaperWizard], {
   //ttl: 0,
 })
 bot.use(session())
-bot.use(stage.middleware())
 bot.use((ctx, next) => {
   const now = new Date()
   ctx.ossLegend = ossLegend
   return next()
 })
+bot.use(stage.middleware())
 
 // bot.hears('🔍 oss', (ctx) => ctx.scene.enter('ossDecisionPaperWizard'))
 // bot.command('echo', (ctx) => ctx.reply('idi nafig'))

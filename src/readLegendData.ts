@@ -6,7 +6,7 @@ interface legendRawDataField {
   owners: String
 }
 
-interface legendData{
+export interface legendData{
   fileNum: Number,
   flats: Number[],
   carPlaces: Number[],

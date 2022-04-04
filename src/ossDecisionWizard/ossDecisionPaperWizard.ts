@@ -2,6 +2,7 @@ import { Scenes, Composer } from 'telegraf'
 import { OssHelperContext } from '../OssHelperContext'
 import { YesOrNoComposer, yesOrNoKeyboard } from './yesOrNoStepHandler'
 import { WizardContextWizard } from 'telegraf/typings/scenes';
+import { legendData } from '../readLegendData'
 
 function ExtractNumbers(st: string): false | number[] {
   const rez = Array.from(st.split(','), s => Number.parseInt(s))
@@ -80,15 +81,9 @@ enterStoreroomsHandler.on('text', async (ctx) => {
   }
 })
 
-async function verifyData(ctx: OssHelperContext){
-  ctx.reply('Данные проверены!')
-  await ctx.scene.leave()
-}
-
-
 export const OssDecisionPaperWizard = new Scenes.WizardScene(  
   'OssDecisionPaperWizard',
-  async (ctx) => {        
+  async (ctx) => {         
     await ctx.replyWithMarkdown('Введите номер вашей квартиры. Если их несколько, перечисляйти их через запятую.\n_Например: 1023, 1024_')
     return ctx.wizard.next()
   },
@@ -99,4 +94,26 @@ export const OssDecisionPaperWizard = new Scenes.WizardScene(
   yesOrNoStoreroomsHandler,
   enterStoreroomsHandler
 )
+
+async function verifyData(ctx: OssHelperContext){
+  let rowByFlatNum:legendData | undefined = undefined
+
+  for(let flatNum of ctx.scene.session.flats){    
+    rowByFlatNum = ctx.ossLegend.data.find(((d) => d.flats.includes(flatNum)))
+    if(rowByFlatNum !== undefined)
+      break
+  };
+
+  if(rowByFlatNum){
+    if(ctx.scene.session.owners.every((fio) => rowByFlatNum?.owners.includes(fio))){
+      ctx.reply(`Тебе полагается документ номер ${rowByFlatNum.fileNum}`)
+    }else
+      ctx.reply(`Собственники указанные в реестре отличаются от введенных Вами. Попробуйте еще раз.`)
+
+  }else
+    ctx.reply(`Простите... Но я не нашел квартиры №${ctx.scene.session.flats}:( Если вы уверены, что номер введен верно обратитесь к @leonid_tj или @paskhalov`)
+  
+  await ctx.scene.leave()
+}
+
 
