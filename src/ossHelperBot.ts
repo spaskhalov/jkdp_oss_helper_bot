@@ -39,15 +39,20 @@ bot.use(stage.middleware())
 bot.action('OSS_ACTION', (ctx) => ctx.scene.enter('OssDecisionPaperWizard'))
 bot.action('DOWNLOAD_EMPTY_DOCS_ACTION',async (ctx) => {
   await ctx.reply('Я отправлю Вам шаблоны. Настоятельно рекомендую поискать именные документы (🗳 Поучаствовать в нашем ОСС).')
-  await sendDecisionPapers(ctx, 'шаблона', './data/short/Empty.pdf', './data/long/Empty.pdf')  
+  await sendDecisionPapers(ctx, 'шаблона', `${dataRoot}/short/Empty.pdf`, `${dataRoot}/long/Empty.pdf`)  
   await sendMainMessage(ctx)
 })
 bot.action('LAW_OSS_ACTION',async (ctx) => {
   await ctx.reply('Вот шаблон заявления о присоединение к иску против ОСС УК Объект.')
-  await ctx.replyWithDocument({ source: './data/isk_oss.pdf'});
+  await ctx.replyWithDocument({ source: `${dataRoot}/isk_oss.pdf`})
   await sendMainMessage(ctx)
 })
 
+bot.action('WHY_WE_NEED_THAT',async (ctx) => {
+  await ctx.reply('На этот вопрос ответит мой друг Александр 😅')
+  await ctx.replyWithAudio({source: `{${dataRoot}/about_oss.mp3`})  
+  await sendMainMessage(ctx)
+})
 bot.on('message', (ctx) => ctx.reply('Чем я могу помочь?', mainScreenKeyboard))
 bot.launch()
 
