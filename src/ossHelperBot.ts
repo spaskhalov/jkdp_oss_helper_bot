@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { Composer, Markup, Scenes, session, Telegraf } from 'telegraf'
+import { Composer, Scenes, session, Telegraf } from 'telegraf'
+import { sendMainMessage, mainScreenKeyboard } from './mainScreenKeyboard'
 import { OssDecisionPaperWizard } from './ossDecisionWizard/ossDecisionPaperWizard'
 import { OssHelperContext } from "./OssHelperContext"
 import { readLegendData } from "./readLegendData"
@@ -17,14 +18,9 @@ const { leave } = Scenes.Stage
 
 const bot = new Telegraf<OssHelperContext>(token)
 
-const mainScreenKeyboard = Markup.inlineKeyboard([  
-   Markup.button.callback('🗳 Поучаствовать в нашем ОСС', 'OSS_ACTION'),
-   Markup.button.callback('🪓 Иск против ОСС УК Объект', 'LAW_OSS_ACTION')   
-])
-
 bot.start((ctx) => 
 {
-  ctx.reply('Привет! Я бот, созданный ИГС Дискавери Парк. Чем я могу помочь тебе?' , mainScreenKeyboard)     
+  sendMainMessage(ctx)     
 })
 
 const stage = new Scenes.Stage<OssHelperContext>([OssDecisionPaperWizard], {
@@ -38,15 +34,28 @@ bot.use((ctx, next) => {
 })
 bot.use(stage.middleware())
 
-// bot.hears('🔍 oss', (ctx) => ctx.scene.enter('ossDecisionPaperWizard'))
-// bot.command('echo', (ctx) => ctx.reply('idi nafig'))
 bot.action('OSS_ACTION', (ctx) => ctx.scene.enter('OssDecisionPaperWizard'))
-//bot.action('LAW_OSS_ACTION', (ctx) => ctx.scene.enter('ossDecisionPaperWizard'))
+bot.action('DOWNLOAD_EMPTY_DOCS_ACTION',async (ctx) => {
+  await ctx.reply('Настоятельно рекомендую поискать именные документы (🗳 Поучаствовать в нашем ОСС).')
+  await ctx.replyWithMarkdown(`Это шаблон бланка для "короткого" ОСС. Его необходимо сдать до *31ого августа* 2022ого года.`)
+  await ctx.replyWithDocument({ source: './data/short/Empty.pdf'})
+  await ctx.replyWithMarkdown(`Это шаблона бланк для "длинного" ОСС. Его необходимо сдать до *30ого ноябра* 2022ого года.`)
+  await ctx.replyWithDocument({ source: './data/long/Empty.pdf'})
+  await ctx.replyWithMarkdown(`Обратите внимание на моменты:
+- Необходимо расписаться внизу каждой страницы.
+- Необходимо подписаться под таблицей на последней странице решения.
+- Поставить галочки в каждой строчке таблицы за/против/воздержался.`)
+  await sendMainMessage(ctx)
+})
+bot.action('LAW_OSS_ACTION',async (ctx) => {
+  await ctx.reply('Такая возможность скоро появится.')
+  await sendMainMessage(ctx)
+})
 
 bot.on('message', (ctx) => ctx.reply('Чем я могу помочь?', mainScreenKeyboard))
 bot.launch()
 
-// // Enable graceful stop
-// process.once('SIGINT', () => bot.stop('SIGINT'))
-// process.once('SIGTERM', () => bot.stop('SIGTERM'))
+// Enable graceful stop
+process.once('SIGINT', () => bot.stop('SIGINT'))
+process.once('SIGTERM', () => bot.stop('SIGTERM'))
 

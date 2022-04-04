@@ -16,5 +16,5 @@ export interface OssHelperContext extends Context {
   // declare scene type
   scene: Scenes.SceneContextScene<OssHelperContext, OssHelperSessionData>
   // declare wizard type
-  wizard: Scenes.WizardContextWizard<OssHelperContext>
+  wizard: Scenes.WizardContextWizard<OssHelperContext>  
 }

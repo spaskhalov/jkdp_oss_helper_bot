@@ -1,18 +1,18 @@
 import reader from "xlsx";
 
 interface legendRawDataField {
-  file_num: Number
-  address: String
-  owners: String
+  file_num: number
+  address: string
+  owners: string
 }
 
 export interface legendData{
-  fileNum: Number,
-  flats: Number[],
-  carPlaces: Number[],
-  storerooms: Number[],
-  owners: String[]
-  name: String
+  fileNum: number,
+  flats: number[],
+  carPlaces: number[],
+  storerooms: number[],
+  owners: string[]
+  name: string
 }
 
 export class OSSLegend{
@@ -24,7 +24,7 @@ export class OSSLegend{
       const flats = extractNumbers(d.address, /кв\. (\d+)/g)
       const carPlaces = extractNumbers(d.address, /м\/м (\d+)/g)
       const pantries = extractNumbers(d.address, /пом\. (\d+)/g)
-      const owners = d.owners?.split(',')
+      const owners = d.owners?.split(',').map((n) => n.trim().toLowerCase())
       const name = owners !== undefined? owners[0].split(' ')[1] : ''
       this.data.push({
         fileNum: d.file_num,
@@ -42,13 +42,10 @@ function extractNumbers(st: String, flatsRegex: RegExp) {
   return Array.from(st.matchAll(flatsRegex), ns => Number.parseInt(ns[1]));
 }
 
-export function readLegendData() {
-  
+export function readLegendData() {  
   // Reading our test file
-  const file = reader.readFile(process.env.LEGEND_FILE!)
-    
-  let data: legendRawDataField[] = []
-    
+  const file = reader.readFile(process.env.LEGEND_FILE!)    
+  let data: legendRawDataField[] = []    
   const sheetName = file.SheetNames[0]
     
   const temp = reader.utils.sheet_to_json<legendRawDataField>(file.Sheets[sheetName])
@@ -57,5 +54,4 @@ export function readLegendData() {
   })
   
   return new OSSLegend(data)
-  
 }
