@@ -4,6 +4,7 @@ import { YesOrNoComposer, yesOrNoKeyboard } from './yesOrNoStepHandler'
 import { WizardContextWizard } from 'telegraf/typings/scenes';
 import { legendData } from '../readLegendData'
 import { sendMainMessage } from '../mainScreenKeyboard'
+import { sendDecisionPapers } from '../commonMessages'
 
 function extractNumbers(st: string): false | number[] {
   const rez = Array.from(st.split(','), s => Number.parseInt(s))
@@ -28,7 +29,7 @@ enterFlatHander.on('text', async (ctx) => {
   else
   {
     ctx.scene.session.flats = rez
-    ctx.replyWithMarkdown(`Введите ФИО собственника. Если их несколько, перечисляйти их через запятую.\n_Например: Иванов Иван Иванович, Иванова Ивана Ивановна_`)    
+    ctx.replyWithMarkdown(`Введите ФИО собственника. Если их несколько, перечисляйте их через запятую.\n_Например: Иванов Иван Иванович, Иванова Ивана Ивановна_`)    
     return ctx.wizard.next()    
   }
 })
@@ -42,7 +43,7 @@ enterFIOHandler.on('text', async (ctx) => {
 
 const yesOrNoCarPlaceHandler = new YesOrNoComposer(
   (ctx) => {
-    ctx.replyWithMarkdown(`Введите номер парковочного места. Если их несколько, перечисляйти их через запятую.\n_Например: 123, 124_`,)
+    ctx.replyWithMarkdown(`Введите номер парковочного места. Если их несколько, перечисляйте их через запятую.\n_Например: 123, 124_`,)
     goNext(ctx)
   }, (ctx) => {
     ctx.reply('У вас есть кладовка?', yesOrNoKeyboard)    
@@ -64,7 +65,7 @@ enterCarPlacesHandler.on('text', async (ctx) => {
 
 const yesOrNoStoreroomsHandler = new YesOrNoComposer(
   (ctx) => {
-    ctx.replyWithMarkdown(`Введите номер кладовки. Если их несколько, перечисляйти их через запятую.\n_Например: 123, 124_`,)
+    ctx.replyWithMarkdown(`Введите номер кладовки. Если их несколько, перечисляйте их через запятую.\n_Например: 123, 124_`,)
     goNext(ctx)
   }, (ctx) => {
     lastStep(ctx)
@@ -85,7 +86,7 @@ enterStoreroomsHandler.on('text', async (ctx) => {
 export const OssDecisionPaperWizard = new Scenes.WizardScene(  
   'OssDecisionPaperWizard',
   async (ctx) => {         
-    await ctx.replyWithMarkdown('Введите номер вашей квартиры. Если их несколько, перечисляйти их через запятую.\n_Например: 1023, 1024_')
+    await ctx.replyWithMarkdown('Введите номер Вашей квартиры. Если их несколько, перечисляйте их через запятую.\n_Например: 1023, 1024_')
     return ctx.wizard.next()
   },
   enterFlatHander,  
@@ -123,18 +124,7 @@ async function verifyData(ctx: OssHelperContext){
     return
   }
   
-  await sendFilesToUser(shortOSSBlankPath, longOSSBlankPath)
-  
-  async function sendFilesToUser(shortOSSPath: string, longOSSPath: string) {
-    await ctx.replyWithMarkdown(`Это Ваш бланк для "короткого" ОСС. Его необходимо сдать до *31ого августа* 2022ого года.`);
-    await ctx.replyWithDocument({ source:  shortOSSPath});
-    await ctx.replyWithMarkdown(`Это Ваш бланк для "длинного" ОСС. Его необходимо сдать до *30ого ноябра* 2022ого года.`);
-    await ctx.replyWithDocument({ source:  longOSSPath});
-    await ctx.replyWithMarkdown(`Обратите внимание на моменты:
-- Необходимо расписаться внизу каждой страницы.
-- Необходимо подписаться под таблицей на последней странице решения.
-- Поставить галочки в каждой строчке таблицы за/против/воздержался.`);
-  }
+  await sendDecisionPapers(ctx, shortOSSBlankPath, longOSSBlankPath)  
 
   function getRowByFlatNum(): legendData | undefined{    
     for(let flatNum of ctx.scene.session.flats){    

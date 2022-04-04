@@ -12,7 +12,6 @@ interface OssHelperSessionData extends Scenes.WizardSessionData {
 export interface OssHelperContext extends Context {
   // will be available under `ctx.ossLegend`
   ossLegend: OSSLegend
-
   // declare scene type
   scene: Scenes.SceneContextScene<OssHelperContext, OssHelperSessionData>
   // declare wizard type

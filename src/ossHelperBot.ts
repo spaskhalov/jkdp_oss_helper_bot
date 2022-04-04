@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { Composer, Scenes, session, Telegraf } from 'telegraf'
+import { sendDecisionPapers } from './commonMessages'
 import { sendMainMessage, mainScreenKeyboard } from './mainScreenKeyboard'
 import { OssDecisionPaperWizard } from './ossDecisionWizard/ossDecisionPaperWizard'
 import { OssHelperContext } from "./OssHelperContext"
@@ -36,15 +37,8 @@ bot.use(stage.middleware())
 
 bot.action('OSS_ACTION', (ctx) => ctx.scene.enter('OssDecisionPaperWizard'))
 bot.action('DOWNLOAD_EMPTY_DOCS_ACTION',async (ctx) => {
-  await ctx.reply('Настоятельно рекомендую поискать именные документы (🗳 Поучаствовать в нашем ОСС).')
-  await ctx.replyWithMarkdown(`Это шаблон бланка для "короткого" ОСС. Его необходимо сдать до *31ого августа* 2022ого года.`)
-  await ctx.replyWithDocument({ source: './data/short/Empty.pdf'})
-  await ctx.replyWithMarkdown(`Это шаблона бланк для "длинного" ОСС. Его необходимо сдать до *30ого ноябра* 2022ого года.`)
-  await ctx.replyWithDocument({ source: './data/long/Empty.pdf'})
-  await ctx.replyWithMarkdown(`Обратите внимание на моменты:
-- Необходимо расписаться внизу каждой страницы.
-- Необходимо подписаться под таблицей на последней странице решения.
-- Поставить галочки в каждой строчке таблицы за/против/воздержался.`)
+  await ctx.reply('Я отправлю Вам шаблоны. Настоятельно рекомендую поискать именные документы (🗳 Поучаствовать в нашем ОСС).')
+  await sendDecisionPapers(ctx, './data/short/Empty.pdf', './data/long/Empty.pdf')  
   await sendMainMessage(ctx)
 })
 bot.action('LAW_OSS_ACTION',async (ctx) => {

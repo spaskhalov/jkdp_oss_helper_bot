@@ -25,7 +25,7 @@ export class OSSLegend{
       const carPlaces = extractNumbers(d.address, /м\/м (\d+)/g)
       const pantries = extractNumbers(d.address, /пом\. (\d+)/g)
       const owners = d.owners?.split(',').map((n) => n.trim().toLowerCase())
-      const name = owners !== undefined? owners[0].split(' ')[1] : ''
+      const name = owners !== undefined? capitalizeFirstLetter(owners[0].split(' ')[1]) : ''
       this.data.push({
         fileNum: d.file_num,
         flats: flats,
@@ -36,6 +36,10 @@ export class OSSLegend{
       })
     });
   }
+}
+
+function capitalizeFirstLetter(st: string) {
+  return st.charAt(0).toUpperCase() + st.slice(1);
 }
 
 function extractNumbers(st: String, flatsRegex: RegExp) {
