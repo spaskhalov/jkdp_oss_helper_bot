@@ -98,42 +98,43 @@ export const OssDecisionPaperWizard = new Scenes.WizardScene(
 )
 
 async function lastStep(ctx: OssHelperContext){
-  await verifyData(ctx)
+  await verifyDataAndSendDocuments(ctx)
   await ctx.scene.leave()
   await sendMainMessage(ctx)
 }
 
-async function verifyData(ctx: OssHelperContext){
+async function verifyDataAndSendDocuments(ctx: OssHelperContext){
   const rowByFlatNum = getRowByFlatNum()
+  const rowByCarPlacesNum = getRowByCarPlacesNum()
+  const rowByStoreroomNum = getRowByStoreroomNum()
   if(!checkOwners()){
     await ctx.reply(`Собственники указанные в реестре отличаются от введенных Вами. Попробуйте еще раз.`)
     return
   }
 
-  let isPreFilled = await verifyDataInner(rowByFlatNum, 'квартиры')
-  if(ctx.scene.session?.carPlaces && ctx.scene.session?.carPlaces.length > 0)
-    isPreFilled = isPreFilled || await verifyDataInner(getRowByCarPlacesNum(), 'м/м')
-  if(ctx.scene.session?.storerooms && ctx.scene.session?.storerooms.length > 0)
-    isPreFilled = isPreFilled || await verifyDataInner(getRowByStoreroomNum(), 'кладовки')
-
-    if(!isPreFilled){
-      ctx.replyWithMarkdown(`❗️Обратите внимание, что у вас есть *частично заполенные бланки*. В них Вам необходимо заполнить следующие поля:
-- ФИО всех собственников.
-_Например: Иванов Иван Иванович, Иванова Ивана Ивановна_
-- Сведения о документе на право собственности. Номер и дату можно найти в выписке из ЕГРН.
-_Например Номер No 77:09:0001007:13872-77/060/2021-1 от 08.10.2021_
-      `)
-    }
+  let isPreFilled = await verifyDataAndSendDocumentsInner(rowByFlatNum, 'квартиры')
+  if(ctx.scene.session?.carPlaces && ctx.scene.session?.carPlaces.length > 0 && rowByFlatNum?.fileNum != rowByCarPlacesNum?.fileNum)
+    isPreFilled = await verifyDataAndSendDocumentsInner(rowByCarPlacesNum, 'м/м') || isPreFilled
+  if(ctx.scene.session?.storerooms && ctx.scene.session?.storerooms.length > 0 && rowByFlatNum?.fileNum != rowByStoreroomNum?.fileNum)
+    isPreFilled = await verifyDataAndSendDocumentsInner(rowByStoreroomNum, 'кладовки') || isPreFilled
 
   await ctx.replyWithMarkdown(`При заполнение решений обратите внимание на следующие моменты:
 - Необходимо расписаться внизу каждой страницы.
 - Необходимо подписаться под таблицей на последней странице решения.
 - Поставить галочки в каждой строчке таблицы за/против/воздержался.`);
+  if(!isPreFilled){
+    ctx.replyWithMarkdown(`❗️Обратите внимание, что у вас есть *частично заполенные бланки*. В них Вам необходимо дополнительно заполнить следующие поля:
+- ФИО всех собственников.
+_Например: Иванов Иван Иванович, Иванова Ивана Ивановна_
+- Сведения о документе на право собственности. Номер и дату можно найти в выписке из ЕГРН.
+_Например Номер No 77:09:0001007:13872-77/060/2021-1 от 08.10.2021_
+  `)
+  }
   await ctx.replyWithMarkdown(`❗️❗️❗️Распечатайте, заполните и отдайте все документы:❗️❗️❗️
   - [Александру Шаповалову](https://t.me/alamar1A22). Кв. 819, башня 3, 22-й этаж. Можно принести документы в любой день с 9:00 до 20:00. 
   - [Леониду](https://t.me/leonid_tj). Свяжитесь заранее через телеграм `)
 
-  async function verifyDataInner(
+  async function verifyDataAndSendDocumentsInner(
     row: legendData | undefined,
     objectName: string): Promise<boolean | undefined>
   {    
@@ -156,29 +157,35 @@ _Например Номер No 77:09:0001007:13872-77/060/2021-1 от 08.10.202
     return isPreFilled
   }
 
-  function getRowByFlatNum(): legendData | undefined{    
-    for(let flatNum of ctx.scene.session.flats){    
-      const row = ctx.ossLegend.data.find(((d) => d.flats.includes(flatNum)))
-      if(row !== undefined)
-        return row
+  function getRowByFlatNum(): legendData | undefined{ 
+    if(ctx.scene.session?.flats && ctx.scene.session?.flats.length > 0){
+      for(let flatNum of ctx.scene.session.flats){    
+        const row = ctx.ossLegend.data.find(((d) => d.flats.includes(flatNum)))
+        if(row !== undefined)
+          return row
+      }
     }
     return undefined
   }
 
-  function getRowByCarPlacesNum(): legendData | undefined{    
-    for(let carPlace of ctx.scene.session.carPlaces){    
-      const row = ctx.ossLegend.data.find(((d) => d.carPlaces.includes(carPlace)))
-      if(row !== undefined)
-        return row
+  function getRowByCarPlacesNum(): legendData | undefined{   
+    if(ctx.scene.session?.carPlaces && ctx.scene.session?.carPlaces.length > 0){
+      for(let carPlace of ctx.scene.session.carPlaces){    
+        const row = ctx.ossLegend.data.find(((d) => d.carPlaces.includes(carPlace)))
+        if(row !== undefined)
+          return row
+      }
     }
     return undefined
   }
 
   function getRowByStoreroomNum(): legendData | undefined{    
-    for(let storeroom of ctx.scene.session.storerooms){    
-      const row = ctx.ossLegend.data.find(((d) => d.storerooms.includes(storeroom)))
-      if(row !== undefined)
-        return row
+    if(ctx.scene.session?.storerooms && ctx.scene.session?.storerooms.length > 0){
+      for(let storeroom of ctx.scene.session.storerooms){    
+        const row = ctx.ossLegend.data.find(((d) => d.storerooms.includes(storeroom)))
+        if(row !== undefined)
+          return row
+      }
     }
     return undefined
   }
