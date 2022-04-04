@@ -4,6 +4,6 @@ export async function sendDecisionPapers(ctx: OssHelperContext, objectName: stri
   const notFilledWarning = !isPreFilled ? `*Он заполнен только частично. *` : ''
   await ctx.replyWithMarkdown(`Это Ваш бланк ${objectName} для "короткого" ОСС. ${notFilledWarning}Его необходимо сдать до *31ого августа* 2022 года.`);
   await ctx.replyWithDocument({ source:  shortOSSPath});
-  await ctx.replyWithMarkdown(`Это Ваш бланк ${objectName} для "длинного" ОСС. ${notFilledWarning}Его необходимо сдать до *30ого ноябра* 2022 года.`);
+  await ctx.replyWithMarkdown(`Это Ваш бланк ${objectName} для "длинного" ОСС. ${notFilledWarning}Его необходимо сдать до *30ого ноября* 2022 года.`);
   await ctx.replyWithDocument({ source:  longOSSPath});
 }
