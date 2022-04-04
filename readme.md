@@ -1,5 +1,5 @@
 # What is this
-This is telegram bot, made for IGS Discovery park. It main goal is to help complete OSS in our apartment complex.
+This is telegram bot, made for IGS Discovery park. It main goal is to help complete OSS in our apartment complex. You can find it here: https://t.me/discovery_park_oss_helper_bot
 
 # How to run
 - Upload data to server. Data format, is data files provide by Strijak Nikita :)
