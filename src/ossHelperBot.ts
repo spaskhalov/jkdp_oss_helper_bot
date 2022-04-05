@@ -50,7 +50,7 @@ bot.action('LAW_OSS_ACTION',async (ctx) => {
 
 bot.action('WHY_WE_NEED_THAT',async (ctx) => {
   await ctx.reply('На этот вопрос ответит мой друг Александр 😅')
-  await ctx.replyWithAudio({source: `{${dataRoot}/about_oss.mp3`})  
+  await ctx.replyWithAudio({source: `${dataRoot}/about_oss.mp3`})  
   await sendMainMessage(ctx)
 })
 bot.on('message', (ctx) => ctx.reply('Чем я могу помочь?', mainScreenKeyboard))
