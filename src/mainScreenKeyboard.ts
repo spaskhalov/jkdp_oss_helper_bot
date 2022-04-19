@@ -5,6 +5,7 @@ export const mainScreenKeyboard = Markup.inlineKeyboard([
   [Markup.button.callback('🗳 Поучаствовать в нашем ОСС', 'OSS_ACTION')],
   [Markup.button.callback('📄 Скачать шаблоны решений', 'DOWNLOAD_EMPTY_DOCS_ACTION'),
   Markup.button.callback('🪓 Иск против ОСС УК Объект', 'LAW_OSS_ACTION')],
+  [Markup.button.callback('ℹ️ Получить инструкцию по голосованию', 'GET_INSTRUCTION')],
   [Markup.button.callback('❓ Зачем нам ТСН?', 'WHY_WE_NEED_THAT')]
 ]);
 

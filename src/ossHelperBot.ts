@@ -53,6 +53,13 @@ bot.action('WHY_WE_NEED_THAT',async (ctx) => {
   await ctx.replyWithAudio({source: `${dataRoot}/about_oss.mp3`})  
   await sendMainMessage(ctx)
 })
+
+bot.action('GET_INSTRUCTION',async (ctx) => {
+  await ctx.reply('Мы подготовили вот такую инструкцию. Надеюсь она окажется полезной для тебя.')
+  await ctx.replyWithDocument({source: `${dataRoot}/instruction.pdf`})  
+  await sendMainMessage(ctx)
+})
+
 bot.on('message', (ctx) => ctx.reply('Чем я могу помочь?', mainScreenKeyboard))
 bot.launch()
 
