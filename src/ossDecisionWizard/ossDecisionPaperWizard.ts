@@ -29,7 +29,7 @@ enterFlatHander.on('text', async (ctx) => {
   else
   {
     ctx.scene.session.flats = rez
-    ctx.replyWithMarkdown(`Введите ФИО собственника. Если их несколько, перечисляйте их через запятую.\n_Например: Иванов Иван Иванович, Иванова Ивана Ивановна_`)    
+    await ctx.reply('У вас есть парковочное место?', yesOrNoKeyboard)
     return ctx.wizard.next()    
   }
 })
@@ -90,7 +90,6 @@ export const OssDecisionPaperWizard = new Scenes.WizardScene(
     return ctx.wizard.next()
   },
   enterFlatHander,  
-  enterFIOHandler,
   yesOrNoCarPlaceHandler,
   enterCarPlacesHandler,
   yesOrNoStoreroomsHandler,
@@ -107,10 +106,10 @@ async function verifyDataAndSendDocuments(ctx: OssHelperContext){
   const rowsByFlatNum = getRowsByFlatNum()
   const rowsByCarPlacesNum = getRowsByCarPlacesNum()
   const rowsByStoreroomNum = getRowsByStoreroomNum()
-  if(!checkOwners()){
-    await ctx.reply(`Собственники указанные в реестре отличаются от введенных Вами. Попробуйте еще раз.`)
-    return
-  }
+  // if(!checkOwners()){
+  //   await ctx.reply(`Собственники указанные в реестре отличаются от введенных Вами. Попробуйте еще раз.`)
+  //   return
+  // }
 
   const rez = await verifyDataAndSendDocumentsInner(rowsByFlatNum, 'квартиры', [])
   if(ctx.scene.session?.carPlaces && ctx.scene.session?.carPlaces.length > 0){

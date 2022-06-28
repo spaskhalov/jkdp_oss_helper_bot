@@ -6,12 +6,12 @@ import { OssDecisionPaperWizard } from './ossDecisionWizard/ossDecisionPaperWiza
 import { OssHelperContext } from "./OssHelperContext"
 import { readLegendData } from "./readLegendData"
 
-const token = process.env.BOT_TOKEN
+const token = process.env.BOT_TOKEN_IGS
 if (token === undefined) {
-  throw new Error('BOT_TOKEN must be provided!')
+  throw new Error('BOT_TOKEN_IGS must be provided!')
 }
 
-const dataRoot = process.env.DATA_ROOT ?? "./data"
+const dataRoot = process.env.DATA_ROOT_IGS ?? "./data"
 const ossLegend = readLegendData(`${dataRoot}/legend.xlsx`)
 
 // Handler factories

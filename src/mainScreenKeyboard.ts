@@ -2,13 +2,12 @@ import { Markup } from 'telegraf';
 import { OssHelperContext } from "./OssHelperContext";
 
 export const mainScreenKeyboard = Markup.inlineKeyboard([
-  [Markup.button.callback('🗳 Поучаствовать в нашем ОСС', 'OSS_ACTION')],
-  [Markup.button.callback('📄 Скачать шаблоны решений', 'DOWNLOAD_EMPTY_DOCS_ACTION'),
-  Markup.button.callback('🪓 Иск против ОСС УК Объект', 'LAW_OSS_ACTION')],
-  [Markup.button.callback('ℹ️ Получить инструкцию по голосованию', 'GET_INSTRUCTION')],
-  [Markup.button.callback('❓ Зачем нам ТСН?', 'WHY_WE_NEED_THAT')]
+  [Markup.button.callback('🗳 Найти бланк', 'OSS_ACTION')],
+  [Markup.button.callback('📄 Шаблоны ОСС', 'DOWNLOAD_EMPTY_DOCS_ACTION'),
+  Markup.button.callback('🪓 Шаблон иск', 'LAW_OSS_ACTION')],
+  [Markup.button.callback('ℹ️ Получить инструкцию по голосованию', 'GET_INSTRUCTION')],  
 ]);
 
 export async function sendMainMessage(ctx: OssHelperContext) {
-  return ctx.reply('Привет! Я бот, созданный ИГС Дискавери Парк. Чем я могу помочь тебе?', mainScreenKeyboard);
+  return ctx.reply('Привет! Я бот, созданный ИГС Дискавери Парк. Не делись этим ботом с людьми, не состоящими в ИГС. Чем я могу помочь тебе?', mainScreenKeyboard);
 }
