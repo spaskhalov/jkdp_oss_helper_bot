@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { Composer, Scenes, session, Telegraf } from 'telegraf'
 import { sendDecisionPapers } from './commonMessages'
+import { defaultAction } from './defaultAction'
 import { sendMainMessage, mainScreenKeyboard } from './mainScreenKeyboard'
 import { OssDecisionPaperWizard } from './ossDecisionWizard/ossDecisionPaperWizard'
 import { OssHelperContext } from "./OssHelperContext"
@@ -19,10 +20,7 @@ const { leave } = Scenes.Stage
 
 const bot = new Telegraf<OssHelperContext>(token)
 
-bot.start((ctx) => 
-{
-  sendMainMessage(ctx)     
-})
+bot.start(defaultAction)
 
 const stage = new Scenes.Stage<OssHelperContext>([OssDecisionPaperWizard], {
   //ttl: 0,
@@ -60,7 +58,7 @@ bot.action('GET_INSTRUCTION',async (ctx) => {
   await sendMainMessage(ctx)
 })
 
-bot.on('message', (ctx) => ctx.reply('Чем я могу помочь?', mainScreenKeyboard))
+bot.on('message',defaultAction)
 bot.launch()
 
 // Enable graceful stop

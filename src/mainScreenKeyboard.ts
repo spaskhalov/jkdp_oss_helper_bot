@@ -9,5 +9,5 @@ export const mainScreenKeyboard = Markup.inlineKeyboard([
 ]);
 
 export async function sendMainMessage(ctx: OssHelperContext) {
-  return ctx.reply('Привет! Я бот, созданный ИГС Дискавери Парк. Не делись этим ботом с людьми, не состоящими в ИГС. Чем я могу помочь тебе?', mainScreenKeyboard);
+  return ctx.reply('Привет! Не делись этим ботом с людьми, не состоящими в ИГС.');
 }

@@ -5,6 +5,7 @@ import { WizardContextWizard } from 'telegraf/typings/scenes';
 import { legendData } from '../readLegendData'
 import { sendMainMessage } from '../mainScreenKeyboard'
 import { sendDecisionPapers } from '../commonMessages'
+import { defaultAction } from '../defaultAction'
 
 function extractNumbers(st: string): false | number[] {
   const rez = Array.from(st.split(','), s => Number.parseInt(s))
@@ -99,7 +100,7 @@ export const OssDecisionPaperWizard = new Scenes.WizardScene(
 async function lastStep(ctx: OssHelperContext){
   await verifyDataAndSendDocuments(ctx)
   await ctx.scene.leave()
-  await sendMainMessage(ctx)
+  await defaultAction(ctx)
 }
 
 async function verifyDataAndSendDocuments(ctx: OssHelperContext){
@@ -123,21 +124,8 @@ async function verifyDataAndSendDocuments(ctx: OssHelperContext){
     rez.sendedRows = rez.sendedRows.concat(r.sendedRows)
   }
 
-  await ctx.replyWithMarkdown(`При заполнение решений обратите внимание на следующие моменты:
-- Необходимо расписаться внизу каждой страницы.
-- Необходимо подписаться под таблицей на последней странице решения.
-- Поставить галочки в каждой строчке таблицы за/против/воздержался.`);
-  if(!rez.isPreFilled){
-    await ctx.replyWithMarkdown(`❗️Обратите внимание, что у вас есть *частично заполенные бланки*. В них Вам необходимо дополнительно заполнить следующие поля:
-- ФИО всех собственников.
-_Например: Иванов Иван Иванович, Иванова Ивана Ивановна_
-- Сведения о документе на право собственности. Номер и дату можно найти в выписке из ЕГРН.
-_Например Номер No 77:09:0001007:13872-77/060/2021-1 от 08.10.2021_
-  `)
-  }
-  await ctx.replyWithMarkdown(`❗️❗️❗️Распечатайте, заполните и отдайте все документы:❗️❗️❗️
-  - [Александру Шаповалову](https://t.me/alamar1A22). Кв. 819, башня 3, 22-й этаж. Можно принести документы в любой день с 9:00 до 20:00. 
-  - [Леониду](https://t.me/leonid_tj). Свяжитесь заранее через телеграм `)
+  await ctx.reply('Мы подготовили вот такую инструкцию. Надеюсь она окажется полезной для тебя.')
+  await ctx.replyWithDocument({source: `${ctx.dataRoot}/instruction.pdf`})  
 
   async function verifyDataAndSendDocumentsInner(
     rows: legendData [],
