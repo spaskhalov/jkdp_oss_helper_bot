@@ -1,13 +1,13 @@
 import reader from "xlsx";
 
 interface legendRawDataField {
-  file_num: number
+  file_num: string
   address: string
   owners: string
 }
 
 export interface legendData{
-  fileNum: number,
+  fileNum: string,
   flats: number[],
   carPlaces: number[],
   storerooms: number[],

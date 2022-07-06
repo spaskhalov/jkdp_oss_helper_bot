@@ -143,7 +143,7 @@ _Например Номер No 77:09:0001007:13872-77/060/2021-1 от 08.10.202
   async function verifyDataAndSendDocumentsInner(
     rows: legendData [],
     objectName: string,
-    alreadySended: number[]): Promise<{ isPreFilled: boolean; sendedRows: number[]; }>
+    alreadySended: string[]): Promise<{ isPreFilled: boolean; sendedRows: string[]; }>
   {    
     const isPreFilled = rows.some(r => r?.owners && r?.owners.length > 0)  
     let shortOSSBlankPath = `${ctx.dataRoot}/short/Empty.pdf`
@@ -151,13 +151,13 @@ _Например Номер No 77:09:0001007:13872-77/060/2021-1 от 08.10.202
     const name = rows.find(r => r.name.length > 0)?.name
     const greetingsMsg = name && name.length > 0 ? `${name}, я` : 'Я'
     const blankName = isPreFilled ? 'именные' : 'частично заполненные'
-    const sendedRows: number [] = []
+    const sendedRows: string [] = []
   
     if(rows.length > 0){      
       await ctx.reply(`Отлично! ${greetingsMsg} нашел ${blankName} бланки для ${objectName}!`)
       for await (const row of rows) {
-        shortOSSBlankPath = `${ctx.dataRoot}/short/files/${row.fileNum} _ .pdf`
-        longOSSBlankPath = `${ctx.dataRoot}/long/files/${row.fileNum} _ .pdf`  
+        shortOSSBlankPath = `${ctx.dataRoot}/short/files/${row.fileNum}.pdf`
+        longOSSBlankPath = `${ctx.dataRoot}/long/files/${row.fileNum}.pdf`  
         if(!alreadySended.includes(row.fileNum) && !sendedRows.includes(row.fileNum)){
           await sendDecisionPapers(ctx, objectName, shortOSSBlankPath, longOSSBlankPath, isPreFilled)
           sendedRows.push(row.fileNum)
@@ -173,36 +173,36 @@ _Например Номер No 77:09:0001007:13872-77/060/2021-1 от 08.10.202
   }
 
   function getRowsByFlatNum(): legendData []{
-    const rez:legendData[] = [] 
+    var rez:legendData[] = [] 
     if(ctx.scene.session?.flats && ctx.scene.session?.flats.length > 0){
       for(let flatNum of ctx.scene.session.flats){    
-        const row = ctx.ossLegend.data.find(((d) => d.flats.includes(flatNum)))
-        if(row !== undefined)
-          rez.push(row)
+        const rows = ctx.ossLegend.data.filter(((d) => d.flats.includes(flatNum)))
+        if(rows !== [])
+          rez = rez.concat(rows)          
       }
     }
     return rez
   }
 
   function getRowsByCarPlacesNum(): legendData []{  
-    const rez:legendData[] = []  
+    var rez:legendData[] = []  
     if(ctx.scene.session?.carPlaces && ctx.scene.session?.carPlaces.length > 0){
       for(let carPlace of ctx.scene.session.carPlaces){    
-        const row = ctx.ossLegend.data.find(((d) => d.carPlaces.includes(carPlace)))
-        if(row !== undefined)
-          rez.push(row)
+        const rows = ctx.ossLegend.data.filter(((d) => d.carPlaces.includes(carPlace)))
+        if(rows !== [])
+          rez = rez.concat(rows)
       }
     }
     return rez
   }
 
   function getRowsByStoreroomNum(): legendData[]{    
-    const rez:legendData[] = []  
+    var rez:legendData[] = []  
     if(ctx.scene.session?.storerooms && ctx.scene.session?.storerooms.length > 0){
       for(let storeroom of ctx.scene.session.storerooms){    
-        const row = ctx.ossLegend.data.find(((d) => d.storerooms.includes(storeroom)))
-        if(row !== undefined)
-          rez.push(row)
+        const rows = ctx.ossLegend.data.filter(((d) => d.storerooms.includes(storeroom)))
+        if(rows !== [])
+          rez = rez.concat(rows)
       }
     }
     return rez
