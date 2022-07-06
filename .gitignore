@@ -9,3 +9,4 @@ lerna-debug.log
 lib
 .yarn
 data/*
+data copy
