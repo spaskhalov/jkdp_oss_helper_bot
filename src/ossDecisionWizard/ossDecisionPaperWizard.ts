@@ -125,7 +125,13 @@ async function verifyDataAndSendDocuments(ctx: OssHelperContext){
   }
 
   await ctx.reply('Мы подготовили вот такую инструкцию. Надеюсь она окажется полезной для тебя.')
-  await ctx.replyWithDocument({source: `${ctx.dataRoot}/instruction.pdf`})  
+  await ctx.replyWithDocument({source: `${ctx.dataRoot}/instruction.pdf`})
+
+  if(ctx.scene.session?.flats){
+    const flatNum = ctx.scene.session?.flats[0]
+    await ctx.reply('А это бланки с ОСС которое провела УК Объект. Посмотрите, это точно Ваша подпись? Кажется она подделана.')
+    await ctx.replyWithDocument({source: `${ctx.dataRoot}/fake_oss/${flatNum}.pdf`})
+  }
 
   async function verifyDataAndSendDocumentsInner(
     rows: legendData [],
